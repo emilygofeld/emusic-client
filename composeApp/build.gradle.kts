@@ -6,6 +6,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+object Versions {
+    const val ktor_version = "3.0.0"
+    const val koin_version = "4.0.0"
+}
+
+
 kotlin {
     jvm("desktop")
     
@@ -23,16 +29,19 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
             // ktor client
-            val ktor_version = "3.0.0"
-            implementation("io.ktor:ktor-client-core:$ktor_version")
-            implementation("io.ktor:ktor-client-cio:$ktor_version")
+            implementation("io.ktor:ktor-client-core:${Versions.ktor_version}")
+            implementation("io.ktor:ktor-client-cio:${Versions.ktor_version}")
 
             // ktor content negotiation for JSON serialization
-            implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+            implementation("io.ktor:ktor-client-content-negotiation:${Versions.ktor_version}")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:${Versions.ktor_version}")
 
             // settings (key-value pair local save)
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
+
+            // koin dependency injection
+            implementation("io.insert-koin:koin-core:${Versions.koin_version}")
+            implementation("io.insert-koin:koin-compose-viewmodel:${Versions.koin_version}")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
