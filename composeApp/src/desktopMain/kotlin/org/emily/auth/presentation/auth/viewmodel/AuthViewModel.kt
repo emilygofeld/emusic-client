@@ -11,12 +11,13 @@ import kotlinx.coroutines.launch
 import org.emily.auth.domain.authentication.AuthResult
 import org.emily.auth.domain.repository.AuthRepository
 import org.emily.auth.presentation.UiEvent
+import org.emily.core.Screen
 
 class AuthViewModel (
     private val repository: AuthRepository
 ): ViewModel() {
-    private var _state by mutableStateOf(AuthState())
-    val state = _state
+    var state by mutableStateOf(AuthState())
+        private set
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -28,16 +29,16 @@ class AuthViewModel (
     fun onEvent(event: AuthEvent) {
         when(event) {
             is AuthEvent.SignInUsernameChanged -> {
-                _state = state.copy(signInUsername = event.value)
+                state = state.copy(signInUsername = event.value)
             }
             is AuthEvent.SignInPasswordChanged -> {
-                _state = state.copy(signInPassword = event.value)
+                state = state.copy(signInPassword = event.value)
             }
             is AuthEvent.SignUpUsernameChanged -> {
-                _state = state.copy(signUpUsername = event.value)
+                state = state.copy(signUpUsername = event.value)
             }
             is AuthEvent.SignUpPasswordChanged -> {
-                _state = state.copy(signUpPassword = event.value)
+                state = state.copy(signUpPassword = event.value)
             }
             AuthEvent.SignIn -> {
                 signIn()
@@ -50,7 +51,7 @@ class AuthViewModel (
 
     private fun signUp() {
         viewModelScope.launch {
-            _state = state.copy(isLoading = true)
+            state = state.copy(isLoading = true)
             val result = repository.signUp(
                 username = state.signUpUsername,
                 password = state.signUpPassword
@@ -59,14 +60,16 @@ class AuthViewModel (
                 _uiEvent.send(
                     UiEvent.ShowSnackBar(result.message ?: "Unknown Error")
                 )
+                return@launch
             }
-            _state = state.copy(isLoading = false)
+            _uiEvent.send(UiEvent.Navigate(Screen.Home))
+            state = state.copy(isLoading = false)
         }
     }
 
     private fun signIn() {
         viewModelScope.launch {
-            _state = state.copy(isLoading = true)
+            state = state.copy(isLoading = true)
             val result = repository.signIn(
                 username = state.signInUsername,
                 password = state.signInPassword
@@ -75,21 +78,23 @@ class AuthViewModel (
                 _uiEvent.send(
                     UiEvent.ShowSnackBar(result.message ?: "Unknown Error")
                 )
+                return@launch
             }
-            _state = state.copy(isLoading = false)
+            _uiEvent.send(UiEvent.Navigate(Screen.Home))
+            state = state.copy(isLoading = false)
         }
     }
 
     private fun authenticate() {
         viewModelScope.launch {
-            _state = state.copy(isLoading = true)
+            state = state.copy(isLoading = true)
             val result = repository.authenticate()
             if (result is AuthResult.UnknownError) {
                 _uiEvent.send(
                     UiEvent.ShowSnackBar(result.message ?: "Unknown Error")
                 )
             }
-            _state = state.copy(isLoading = false)
+            state = state.copy(isLoading = false)
         }
     }
 }

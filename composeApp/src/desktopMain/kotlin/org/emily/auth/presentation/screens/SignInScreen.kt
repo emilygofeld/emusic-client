@@ -23,10 +23,12 @@ import kotlinx.coroutines.flow.collectLatest
 import org.emily.auth.presentation.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
+import org.emily.core.Screen
 
 @Composable
 fun SignInScreen(
-    vm: AuthViewModel
+    vm: AuthViewModel,
+    onNavigate: (to: Screen) -> Unit
 ) {
     val state = vm.state
     val snackBarHostState = remember { SnackbarHostState() }
@@ -37,9 +39,13 @@ fun SignInScreen(
                 is UiEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(event.message)
                 }
+                is UiEvent.Navigate -> {
+                    onNavigate(event.to)
+                }
             }
         }
     }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
@@ -78,10 +84,10 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                vm.onEvent(AuthEvent.SignUp)
+                vm.onEvent(AuthEvent.SignIn)
             }
         ) {
-            Text(text = "Sign up")
+            Text(text = "Sign in")
         }
     }
 

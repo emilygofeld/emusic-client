@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
@@ -23,10 +24,12 @@ import kotlinx.coroutines.flow.collectLatest
 import org.emily.auth.presentation.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
+import org.emily.core.Screen
 
 @Composable
 fun SignUpScreen (
-    vm: AuthViewModel
+    vm: AuthViewModel,
+    onNavigate: (to: Screen) -> Unit
 ) {
     val state = vm.state
     val snackBarHostState = remember { SnackbarHostState() }
@@ -36,6 +39,10 @@ fun SignUpScreen (
             when (event) {
                 is UiEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(event.message)
+                }
+
+                is UiEvent.Navigate -> {
+                    onNavigate(event.to)
                 }
             }
         }
@@ -61,7 +68,8 @@ fun SignUpScreen (
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
                     Text(text = "Enter username...")
-                }
+                },
+                shape = RoundedCornerShape(8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
@@ -74,14 +82,14 @@ fun SignUpScreen (
                     Text(text = "Enter password...")
                 }
             )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                vm.onEvent(AuthEvent.SignUp)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    vm.onEvent(AuthEvent.SignUp)
+                }
+            ) {
+                Text(text = "Sign up")
             }
-        ) {
-            Text(text = "Sign up")
         }
     }
 }

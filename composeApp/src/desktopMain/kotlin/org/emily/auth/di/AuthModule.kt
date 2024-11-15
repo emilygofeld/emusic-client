@@ -12,6 +12,8 @@ import org.emily.auth.data.token.JwtTokenService
 import org.emily.auth.domain.api.AuthApi
 import org.emily.auth.domain.repository.AuthRepository
 import org.emily.auth.domain.token.TokenService
+import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 
@@ -25,7 +27,14 @@ val authModule = module {
             })
         }
     }
+
     single<AuthApi> { AuthApiImpl(client) }
     single<TokenService<String>> { JwtTokenService(Settings()) }
     single<AuthRepository> { AuthRepositoryImpl(get<AuthApi>(), get<TokenService<String>>()) }
+
+    viewModel {
+        AuthViewModel(
+            repository = get<AuthRepository>()
+        )
+    }
 }
