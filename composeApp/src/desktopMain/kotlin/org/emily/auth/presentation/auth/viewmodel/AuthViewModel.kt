@@ -46,8 +46,18 @@ class AuthViewModel (
             AuthEvent.SignUp -> {
                 signUp()
             }
+            AuthEvent.ToSignUp -> {
+                toSignUp()
+            }
+            AuthEvent.ToSignIn -> {
+                toSignIn()
+            }
+            AuthEvent.Clear -> {
+                state = state.copy(signUpPassword = "", signUpUsername = "", signInPassword = "", signInUsername = "")
+            }
         }
     }
+
 
     private fun signUp() {
         viewModelScope.launch {
@@ -94,6 +104,26 @@ class AuthViewModel (
                     UiEvent.ShowSnackBar(result.message ?: "Unknown Error")
                 )
             }
+            state = state.copy(isLoading = false)
+        }
+    }
+
+    private fun toSignIn() {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+            _uiEvent.send(
+                UiEvent.Navigate(to = Screen.Login)
+            )
+            state = state.copy(isLoading = false)
+        }
+    }
+
+    private fun toSignUp() {
+        viewModelScope.launch {
+            state = state.copy(isLoading = true)
+            _uiEvent.send(
+                UiEvent.Navigate(to = Screen.Signup)
+            )
             state = state.copy(isLoading = false)
         }
     }

@@ -18,9 +18,9 @@ import org.emily.auth.domain.authentication.AuthResult
 import org.emily.auth.domain.authentication.json
 
 class AuthApiImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val baseUrl: String
 ): AuthApi {
-    private val baseUrl = "http://10.0.0.13:8080/"
 
     override suspend fun signUp(request: AuthRequest): AuthResponse {
         val res = client.post("${baseUrl}signUp") {

@@ -28,7 +28,9 @@ val authModule = module {
         }
     }
 
-    single<AuthApi> { AuthApiImpl(client) }
+    val serverIp = "http://10.0.0.13:8080/"
+
+    single<AuthApi> { AuthApiImpl(client, serverIp) }
     single<TokenService<String>> { JwtTokenService(Settings()) }
     single<AuthRepository> { AuthRepositoryImpl(get<AuthApi>(), get<TokenService<String>>()) }
 
@@ -37,4 +39,5 @@ val authModule = module {
             repository = get<AuthRepository>()
         )
     }
+
 }

@@ -8,4 +8,9 @@ sealed class AuthEvent {
     data class SignInUsernameChanged(val value: String): AuthEvent()
     data class SignInPasswordChanged(val value: String): AuthEvent()
     data object SignIn: AuthEvent()
+
+    data object ToSignUp: AuthEvent()
+    data object ToSignIn: AuthEvent()
+
+    data object Clear: AuthEvent()
 }
