@@ -40,7 +40,7 @@ class AuthApiImpl(
     }
 
     override suspend fun authenticate(token: String): AuthResult<Unit> {
-        val response: HttpResponse = client.get("${baseUrl}auth") {
+        val response: HttpResponse = client.get("${baseUrl}authenticate") {
             header(HttpHeaders.Authorization, token)
         }
 

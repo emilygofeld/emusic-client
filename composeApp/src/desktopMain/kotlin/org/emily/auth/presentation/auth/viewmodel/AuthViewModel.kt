@@ -98,11 +98,10 @@ class AuthViewModel (
     private fun authenticate() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
-            val result = repository.authenticate()
-            if (result is AuthResult.UnknownError) {
-                _uiEvent.send(
-                    UiEvent.ShowSnackBar(result.message ?: "Unknown Error")
-                )
+            when (val result = repository.authenticate()) {
+                is AuthResult.Authorized -> _uiEvent.send(UiEvent.Navigate(Screen.Home))
+                is AuthResult.Unauthorized -> _uiEvent.send(UiEvent.Navigate(Screen.Login))
+                is AuthResult.UnknownError -> _uiEvent.send(UiEvent.ShowSnackBar(result.message ?: "Unknown Error"))
             }
             state = state.copy(isLoading = false)
         }

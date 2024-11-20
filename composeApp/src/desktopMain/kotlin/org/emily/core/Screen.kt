@@ -1,10 +1,12 @@
 package org.emily.core
 
-sealed class Screen(val route: String) {
+sealed class Screen {
     // auth
-    data object Login: Screen(route = "Login")
-    data object Signup: Screen(route = "Signup")
+    data object Splash: Screen()
+    data object Login: Screen()
+    data object Signup: Screen()
 
     // spotify
-    data object Home: Screen(route = "home")
+    data object Home: Screen()
+
 }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
 import org.emily.auth.presentation.screens.SignInScreen
 import org.emily.auth.presentation.screens.SignUpScreen
+import org.emily.auth.presentation.screens.SplashScreen
 import org.emily.core.Screen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -20,8 +21,17 @@ import org.koin.compose.viewmodel.koinViewModel
 @Preview
 fun App() {
     MaterialTheme {
-        var state by remember { mutableStateOf<Screen>(Screen.Signup) }
+        var state by remember { mutableStateOf<Screen>(Screen.Splash) }
         when (state) {
+            Screen.Splash -> {
+                SplashScreen(
+                    vm = koinViewModel<AuthViewModel>(),
+                    onNavigate = { screen ->
+                        state = screen
+                    }
+                )
+            }
+
             Screen.Login -> {
                 SignInScreen(
                     vm = koinViewModel<AuthViewModel>(),

@@ -12,7 +12,7 @@ class JwtTokenService(
     }
 
     override suspend fun get(): String? {
-        return settings["token"]
+        return settings.get<String>("token")
     }
 
     override suspend fun clear() {

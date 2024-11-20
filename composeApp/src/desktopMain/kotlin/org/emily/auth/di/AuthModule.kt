@@ -28,7 +28,7 @@ val authModule = module {
         }
     }
 
-    val serverIp = "http://10.0.0.13:8080/"
+    val serverIp = "http://10.10.151.254:8080/"
 
     single<AuthApi> { AuthApiImpl(client, serverIp) }
     single<TokenService<String>> { JwtTokenService(Settings()) }
