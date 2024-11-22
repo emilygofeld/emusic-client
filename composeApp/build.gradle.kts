@@ -17,7 +17,9 @@ kotlin {
     jvm("desktop")
     
     sourceSets {
-        val desktopMain by getting
+        val desktopMain by getting {
+            resources.srcDirs("src/desktopMain/res")
+        }
         
         commonMain.dependencies {
             implementation(compose.runtime)

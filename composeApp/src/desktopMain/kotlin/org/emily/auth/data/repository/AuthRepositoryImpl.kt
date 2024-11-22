@@ -48,6 +48,7 @@ class AuthRepositoryImpl(
 
     override suspend fun authenticate(): AuthResult<Unit> {
         println(tokenService.get())
+        tokenService.clear()
         val token = tokenService.get() ?: return AuthResult.Unauthorized()
         return try {
             api.authenticate("Bearer $token")

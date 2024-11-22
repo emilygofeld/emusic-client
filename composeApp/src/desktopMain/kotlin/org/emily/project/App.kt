@@ -14,11 +14,9 @@ import org.emily.auth.presentation.screens.SignInScreen
 import org.emily.auth.presentation.screens.SignUpScreen
 import org.emily.auth.presentation.screens.SplashScreen
 import org.emily.core.Screen
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-@Preview
 fun App() {
     MaterialTheme {
         var state by remember { mutableStateOf<Screen>(Screen.Splash) }

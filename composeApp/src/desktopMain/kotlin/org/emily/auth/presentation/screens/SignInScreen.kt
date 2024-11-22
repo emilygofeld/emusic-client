@@ -43,6 +43,7 @@ import org.emily.auth.presentation.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
 import org.emily.core.Screen
+import org.emily.project.Fonts
 import org.emily.project.black
 import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
@@ -97,6 +98,7 @@ fun SignInScreen(
                     color = secondaryColor,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = Fonts.montserratFontFamily,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -104,6 +106,7 @@ fun SignInScreen(
                     text = "Log in to continue your musical journey",
                     color = Color.White,
                     fontSize = 20.sp,
+                    fontFamily = Fonts.montserratFontFamily,
                     textAlign = TextAlign.Center
                 )
 
@@ -120,6 +123,7 @@ fun SignInScreen(
                     placeholder = {
                         Text(
                             text = "Enter username...",
+                            fontFamily = Fonts.montserratFontFamily,
                             color = Color.White
                         )
                     },
@@ -151,6 +155,7 @@ fun SignInScreen(
                     placeholder = {
                         Text(
                             text = "Enter password...",
+                            fontFamily = Fonts.montserratFontFamily,
                             color = Color.White
                         )
                     },
@@ -188,7 +193,8 @@ fun SignInScreen(
                     Text(
                         text = "Log in",
                         style = MaterialTheme.typography.h6,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        fontFamily = Fonts.montserratFontFamily
                     )
                 }
 
@@ -200,6 +206,7 @@ fun SignInScreen(
                     Text(
                         text = "Don't have an account?",
                         fontSize = 16.sp,
+                        fontFamily = Fonts.montserratFontFamily,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -207,6 +214,7 @@ fun SignInScreen(
                     Text(
                         text = "Sign up",
                         fontSize = 16.sp,
+                        fontFamily = Fonts.montserratFontFamily,
                         color = secondaryColor,
                         modifier = Modifier.onClick {
                             vm.onEvent(

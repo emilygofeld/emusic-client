@@ -43,6 +43,7 @@ import org.emily.auth.presentation.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
 import org.emily.core.Screen
+import org.emily.project.Fonts
 import org.emily.project.black
 import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
@@ -97,14 +98,16 @@ fun SignUpScreen (
                     color = secondaryColor,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = Fonts.montserratFontFamily
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Sign up to start your musical journey",
                     color = Color.White,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = Fonts.montserratFontFamily
                 )
 
                 Spacer(modifier = Modifier.height(80.dp))
@@ -120,7 +123,8 @@ fun SignUpScreen (
                     placeholder = {
                         Text(
                             text = "Enter username...",
-                            color = Color.White
+                            color = Color.White,
+                            fontFamily = Fonts.montserratFontFamily
                         )
                     },
                     leadingIcon = {
@@ -151,7 +155,8 @@ fun SignUpScreen (
                     placeholder = {
                         Text(
                             text = "Enter password...",
-                            color = Color.White
+                            color = Color.White,
+                            fontFamily = Fonts.montserratFontFamily
                         )
                     },
                     leadingIcon = {
@@ -188,7 +193,8 @@ fun SignUpScreen (
                     Text(
                         text = "Sign up",
                         style = MaterialTheme.typography.h6,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        fontFamily = Fonts.montserratFontFamily
                     )
                 }
 
@@ -200,13 +206,15 @@ fun SignUpScreen (
                     Text(
                         text = "Already have an account?",
                         fontSize = 16.sp,
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = Fonts.montserratFontFamily
                     )
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
                         text = "Log in",
                         fontSize = 16.sp,
+                        fontFamily = Fonts.montserratFontFamily,
                         color = secondaryColor,
                         modifier = Modifier.onClick {
                             vm.onEvent(
