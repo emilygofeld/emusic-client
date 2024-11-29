@@ -11,11 +11,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlinx.serialization.json.Json
 import org.emily.auth.domain.api.AuthApi
 import org.emily.auth.domain.authentication.AuthRequest
 import org.emily.auth.domain.authentication.AuthResponse
 import org.emily.auth.domain.authentication.AuthResult
-import org.emily.auth.domain.authentication.json
 
 class AuthApiImpl(
     private val client: HttpClient,
@@ -25,18 +25,18 @@ class AuthApiImpl(
     override suspend fun signUp(request: AuthRequest): AuthResponse {
         val res = client.post("${baseUrl}signUp") {
             contentType(ContentType.Application.Json)
-            setBody(json.encodeToString(AuthRequest.serializer(), request)) // Serialize request
+            setBody(Json.encodeToString(AuthRequest.serializer(), request)) // Serialize request
         }.bodyAsText()
-        return json.decodeFromString<AuthResponse>(res)         // Deserialize the response into AuthResponse
+        return Json.decodeFromString<AuthResponse>(res)         // Deserialize the response into AuthResponse
     }
 
 
     override suspend fun signIn(request: AuthRequest): AuthResponse {
         val res = client.post("${baseUrl}signIn") {
             contentType(ContentType.Application.Json)
-            setBody(json.encodeToString(AuthRequest.serializer(), request))
+            setBody(Json.encodeToString(AuthRequest.serializer(), request))
         }.bodyAsText()
-        return json.decodeFromString<AuthResponse>(res)     // Deserialize the response into AuthResponse
+        return Json.decodeFromString<AuthResponse>(res)     // Deserialize the response into AuthResponse
     }
 
     override suspend fun authenticate(token: String): AuthResult<Unit> {
