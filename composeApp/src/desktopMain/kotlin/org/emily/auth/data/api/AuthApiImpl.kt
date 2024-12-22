@@ -19,28 +19,27 @@ import org.emily.auth.domain.authentication.AuthResult
 
 class AuthApiImpl(
     private val client: HttpClient,
-    private val baseUrl: String
+    private val serverIp: String
 ): AuthApi {
 
     override suspend fun signUp(request: AuthRequest): AuthResponse {
-        val res = client.post("${baseUrl}signUp") {
+        val res = client.post("${serverIp}signUp") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(AuthRequest.serializer(), request)) // Serialize request
         }.bodyAsText()
-        return Json.decodeFromString<AuthResponse>(res)         // Deserialize the response into AuthResponse
+        return Json.decodeFromString<AuthResponse>(res) // Deserialize the response into AuthResponse
     }
 
-
     override suspend fun signIn(request: AuthRequest): AuthResponse {
-        val res = client.post("${baseUrl}signIn") {
+        val res = client.post("${serverIp}signIn") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(AuthRequest.serializer(), request))
         }.bodyAsText()
-        return Json.decodeFromString<AuthResponse>(res)     // Deserialize the response into AuthResponse
+        return Json.decodeFromString<AuthResponse>(res) // Deserialize the response into AuthResponse
     }
 
     override suspend fun authenticate(token: String): AuthResult<Unit> {
-        val response: HttpResponse = client.get("${baseUrl}authenticate") {
+        val response: HttpResponse = client.get("${serverIp}authenticate") {
             header(HttpHeaders.Authorization, token)
         }
 
