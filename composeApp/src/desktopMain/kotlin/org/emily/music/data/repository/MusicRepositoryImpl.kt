@@ -6,7 +6,6 @@ import org.emily.music.domain.api.MusicApi
 import org.emily.music.domain.communication.MusicRequest
 import org.emily.music.domain.communication.MusicResponse
 import org.emily.music.domain.repository.MusicRepository
-import kotlin.reflect.KClass
 
 class MusicRepositoryImpl(
     private val api: MusicApi,
@@ -14,88 +13,44 @@ class MusicRepositoryImpl(
 ): MusicRepository {
 
     override suspend fun addSongToPlaylist(songId: ID, playlistId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.AddSongToPlaylist(songId = songId, playlistId = playlistId),
-            MusicRequest.AddSongToPlaylist::class
-        )
+        return api.sendApiRequest(MusicRequest.AddSongToPlaylist(songId = songId, playlistId = playlistId), getToken())
     }
 
     override suspend fun removeSongFromPlaylist(songId: ID, playlistId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.DeleteSongFromPlaylist(songId = songId, playlistId = playlistId),
-            MusicRequest.DeleteSongFromPlaylist::class
-        )
+        return api.sendApiRequest(MusicRequest.DeleteSongFromPlaylist(songId = songId, playlistId = playlistId), getToken())
     }
 
     override suspend fun getPlaylist(playlistId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetPlaylist(playlistId = playlistId),
-            MusicRequest.GetPlaylist::class
-        )
+        return api.sendApiRequest(MusicRequest.GetPlaylist(playlistId = playlistId), getToken())
     }
 
     override suspend fun createPlaylistForUser(playlistTitle: String): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.CreatePlaylist(title = playlistTitle),
-            MusicRequest.CreatePlaylist::class
-        )
+        return api.sendApiRequest(MusicRequest.CreatePlaylist(title = playlistTitle), getToken())
     }
 
     override suspend fun removePlaylistFromUser(playlistId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.DeletePlaylist(playlistId = playlistId),
-            MusicRequest.DeletePlaylist::class
-        )
+        return api.sendApiRequest(MusicRequest.DeletePlaylist(playlistId = playlistId), getToken())
     }
 
     override suspend fun getUserPlaylists(userId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetUserPlaylists(userId = userId),
-            MusicRequest.GetUserPlaylists::class
-        )
+        return api.sendApiRequest(MusicRequest.GetUserPlaylists(userId = userId), getToken())
     }
 
     override suspend fun getSong(songId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetSong(songId = songId),
-            MusicRequest.GetSong::class
-        )
+        return api.sendApiRequest(MusicRequest.GetSong(songId = songId), getToken())
     }
 
     override suspend fun getUserData(userId: ID): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetUserData(userId = userId),
-            MusicRequest.GetUserData::class
-        )
+        return api.sendApiRequest(MusicRequest.GetUserData(userId = userId), getToken())
+
     }
 
     override suspend fun getCurrentUserPlaylists(): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetCurrUserPlaylists(),
-            MusicRequest.GetCurrUserPlaylists::class
-        )
+        return api.sendApiRequest(MusicRequest.GetCurrUserPlaylists(), getToken())
     }
 
     override suspend fun getCurrentUserData(): MusicResponse {
-        return getMusicResponse(
-            MusicRequest.GetCurrUserData(),
-            MusicRequest.GetCurrUserData::class
-        )
-    }
-
-    private suspend fun <T : MusicRequest> getMusicResponse(
-        musicRequest: T,
-        type: KClass<T>
-    ): MusicResponse {
-        return try {
-            api.sendApiRequest(
-                musicRequest = musicRequest,
-                type = type,
-                token = getToken()
-            )
-        } catch (e: Exception) {
-            MusicResponse.ErrorResponse(message = e.localizedMessage)
-        }
+        return api.sendApiRequest(MusicRequest.GetCurrUserData(), getToken())
     }
 
     private suspend fun getToken(): String {

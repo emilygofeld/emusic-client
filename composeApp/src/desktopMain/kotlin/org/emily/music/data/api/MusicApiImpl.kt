@@ -13,30 +13,38 @@ import kotlinx.serialization.json.Json
 import org.emily.music.domain.api.MusicApi
 import org.emily.music.domain.communication.MusicRequest
 import org.emily.music.domain.communication.MusicResponse
-import kotlin.reflect.KClass
-import kotlin.reflect.safeCast
+import org.emily.music.domain.communication.ResponseDeserializer
 
 class MusicApiImpl(
     private val client: HttpClient,
     private val serverIp: String,
 ) : MusicApi {
 
-    override suspend fun <T : MusicRequest> sendApiRequest(
-        musicRequest: MusicRequest,
-        type: KClass<T>,
-        token: String
-    ): MusicResponse {
-        return sendRequest(musicRequest, type, token)
-    }
+    override suspend fun sendApiRequest(request: MusicRequest, token: String): MusicResponse {
+        val json = Json {
+            encodeDefaults = true
+        }
 
-    private suspend inline fun sendRequest(request: MusicRequest, type: KClass<*>, token: String): MusicResponse {
-        val json = Json { encodeDefaults = true }
-        val castedRequest = type.safeCast(request) ?: return MusicResponse.ErrorResponse(message = "Server Error")
+        val jsonEncoded = when (request) {
+            is MusicRequest.AddSongToPlaylist -> json.encodeToString(request)
+            is MusicRequest.CreatePlaylist -> json.encodeToString(request)
+            is MusicRequest.DeletePlaylist -> json.encodeToString(request)
+            is MusicRequest.DeleteSongFromPlaylist -> json.encodeToString(request)
+            is MusicRequest.GetCurrUserData -> json.encodeToString(request)
+            is MusicRequest.GetCurrUserPlaylists -> json.encodeToString(request)
+            is MusicRequest.GetPlaylist -> json.encodeToString(request)
+            is MusicRequest.GetSong -> json.encodeToString(request)
+            is MusicRequest.GetUserData -> json.encodeToString(request)
+            is MusicRequest.GetUserPlaylists -> json.encodeToString(request)
+        }
+
         val res = client.post("${serverIp}emusic") {
             contentType(ContentType.Application.Json)
-            setBody(json.encodeToString(castedRequest))
-            header(HttpHeaders.Authorization, token)
+            setBody(jsonEncoded)
+            header(HttpHeaders.Authorization, "bearer $token")
         }.bodyAsText()
-        return json.decodeFromString(MusicResponse.serializer(), res)
+
+        return json.decodeFromString(ResponseDeserializer, res)
+
     }
 }
