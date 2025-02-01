@@ -4,6 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import org.emily.core.Screen
+import org.emily.core.utils.UiEvent
 import org.emily.music.domain.models.PlayingSong
 import org.emily.music.domain.models.Song
 import org.emily.music.domain.repository.MusicRepository
@@ -14,8 +20,10 @@ class WrapperBarViewModel(
     var state by mutableStateOf(WrapperBarState())
         private set
 
-    init {
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
+    init {
         // for testing purpose - delete later
 
         state.songQueue.add(
@@ -55,6 +63,9 @@ class WrapperBarViewModel(
 
             is WrapperBarEvent.OnSongBarChange ->
                 state.songQueue.addLast(event.newSong)
+
+            WrapperBarEvent.OnOpenHome ->
+                openHomeScreen()
         }
     }
 
@@ -70,5 +81,11 @@ class WrapperBarViewModel(
         val previousSong = state.historyStack.removeLastOrNull() ?: return
         state.songQueue.addFirst(previousSong)
         state = state.copy(currentPlayingSong = previousSong)
+    }
+
+    private fun openHomeScreen() {
+        viewModelScope.launch {
+            _uiEvent.send(UiEvent.Navigate(to = Screen.Home))
+        }
     }
 }

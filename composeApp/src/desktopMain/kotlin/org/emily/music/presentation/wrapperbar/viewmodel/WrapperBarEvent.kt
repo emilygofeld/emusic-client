@@ -8,4 +8,5 @@ sealed class WrapperBarEvent {
     data object OnSkipSong: WrapperBarEvent()
     data object OnPlayPreviousSong: WrapperBarEvent()
     data class OnSongBarChange(val newSong: PlayingSong): WrapperBarEvent()
+    data object OnOpenHome: WrapperBarEvent()
 }

@@ -1,4 +1,4 @@
-package org.emily.auth.presentation
+package org.emily.core.utils
 
 import org.emily.core.Screen
 
