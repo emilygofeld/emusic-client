@@ -48,6 +48,9 @@ kotlin {
             // koin dependency injection
             implementation("io.insert-koin:koin-core:${Versions.koin_version}")
             implementation("io.insert-koin:koin-compose-viewmodel:${Versions.koin_version}")
+
+            // icons
+            implementation(compose.materialIconsExtended)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.emily.auth.domain.authentication.AuthResult
 import org.emily.auth.domain.repository.AuthRepository
-import org.emily.auth.presentation.UiEvent
+import org.emily.core.utils.UiEvent
 import org.emily.core.Screen
 
 class AuthViewModel (
