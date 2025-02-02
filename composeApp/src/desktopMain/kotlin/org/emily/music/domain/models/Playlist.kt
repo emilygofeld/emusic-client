@@ -6,7 +6,8 @@ import org.emily.core.constants.ID
 @Serializable
 data class Playlist(
     val title: String,
-    val songs: List<ID> = emptyList(),
+    val songs: List<Song> = emptyList(),
+    val ownerName: String,
     val ownerId: ID,
     val id: ID = ""
 )
