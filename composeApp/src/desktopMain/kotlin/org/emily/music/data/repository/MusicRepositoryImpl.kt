@@ -20,6 +20,14 @@ class MusicRepositoryImpl(
         return api.sendApiRequest(MusicRequest.DeleteSongFromPlaylist(songId = songId, playlistId = playlistId), getToken())
     }
 
+    override suspend fun addSongToUserFavorites(songId: ID): MusicResponse {
+        return api.sendApiRequest(MusicRequest.AddSongToFavorites(songId = songId), getToken())
+    }
+
+    override suspend fun removeSongFromUserFavorites(songId: ID): MusicResponse {
+        return api.sendApiRequest(MusicRequest.DeleteSongFromFavorites(songId = songId), getToken())
+    }
+
     override suspend fun getPlaylist(playlistId: ID): MusicResponse {
         return api.sendApiRequest(MusicRequest.GetPlaylist(playlistId = playlistId), getToken())
     }
@@ -42,7 +50,6 @@ class MusicRepositoryImpl(
 
     override suspend fun getUserData(userId: ID): MusicResponse {
         return api.sendApiRequest(MusicRequest.GetUserData(userId = userId), getToken())
-
     }
 
     override suspend fun getCurrentUserPlaylists(): MusicResponse {

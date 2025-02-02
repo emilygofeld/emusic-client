@@ -36,6 +36,8 @@ class MusicApiImpl(
             is MusicRequest.GetSong -> json.encodeToString(request)
             is MusicRequest.GetUserData -> json.encodeToString(request)
             is MusicRequest.GetUserPlaylists -> json.encodeToString(request)
+            is MusicRequest.AddSongToFavorites -> json.encodeToString(request)
+            is MusicRequest.DeleteSongFromFavorites -> json.encodeToString(request)
         }
 
         val res = client.post("${serverIp}emusic") {
