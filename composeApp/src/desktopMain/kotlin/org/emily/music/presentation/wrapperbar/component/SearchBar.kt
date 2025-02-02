@@ -3,7 +3,9 @@ package org.emily.music.presentation.wrapperbar.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarEvent
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarViewModel
 import org.emily.project.Fonts
+import org.emily.project.black
 import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
 
@@ -35,7 +38,7 @@ fun SearchBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(secondaryColor)
+            .background(black)
             .padding(vertical = 16.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -72,5 +75,7 @@ fun SearchBar(
             shape = RoundedCornerShape(40.dp),
             singleLine = true
         )
+
+        Spacer(modifier = Modifier.height(4.dp).background(secondaryColor))
     }
 }
