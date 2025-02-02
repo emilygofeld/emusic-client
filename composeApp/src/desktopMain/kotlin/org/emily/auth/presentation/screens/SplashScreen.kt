@@ -10,7 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
-import org.emily.auth.presentation.UiEvent
+import org.emily.core.utils.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
 import org.emily.core.Screen
 import org.emily.project.black
-import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
+import org.emily.project.primaryColor
 
 @Composable
 fun SplashScreen(
@@ -48,7 +48,7 @@ fun SplashScreen(
         }
     }
     val gradientBackground = Brush.verticalGradient(
-        colors = listOf(primaryColor, black)
+        colors = listOf(secondaryColor, black)
     )
 
     Scaffold(
@@ -63,7 +63,7 @@ fun SplashScreen(
                 .background(brush = gradientBackground),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Default.Home, contentDescription = "home", tint = secondaryColor, modifier = Modifier.size(128.dp))
+            Icon(Icons.Default.MusicNote, contentDescription = "Splash screen", tint = primaryColor, modifier = Modifier.size(128.dp))
         }
     }
 }

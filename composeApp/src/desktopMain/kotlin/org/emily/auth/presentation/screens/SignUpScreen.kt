@@ -39,14 +39,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
-import org.emily.auth.presentation.UiEvent
+import org.emily.core.utils.UiEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthEvent
 import org.emily.auth.presentation.auth.viewmodel.AuthViewModel
 import org.emily.core.Screen
 import org.emily.project.Fonts
 import org.emily.project.black
-import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
+import org.emily.project.primaryColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -72,7 +72,7 @@ fun SignUpScreen (
     }
 
     val gradientBackground = Brush.verticalGradient(
-        colors = listOf(primaryColor, black)
+        colors = listOf(secondaryColor.copy(0.9f), black)
     )
 
     Scaffold(
@@ -95,7 +95,7 @@ fun SignUpScreen (
             ) {
                 Text(
                     text = "Join the Rhythm",
-                    color = secondaryColor,
+                    color = primaryColor,
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -136,7 +136,7 @@ fun SignUpScreen (
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = Color.White,
-                        focusedBorderColor = secondaryColor,
+                        focusedBorderColor = primaryColor,
                         unfocusedBorderColor = Color.White
                     ),
                     shape = RoundedCornerShape(4.dp),
@@ -169,7 +169,7 @@ fun SignUpScreen (
                     visualTransformation = PasswordVisualTransformation(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = Color.White,
-                        focusedBorderColor = secondaryColor,
+                        focusedBorderColor = primaryColor,
                         unfocusedBorderColor = Color.White
                     ),
                     shape = RoundedCornerShape(4.dp)
@@ -182,8 +182,8 @@ fun SignUpScreen (
                         vm.onEvent(AuthEvent.SignUp)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = secondaryColor,
-                        contentColor = primaryColor
+                        backgroundColor = primaryColor,
+                        contentColor = secondaryColor
                     ),
                     shape = RoundedCornerShape(32.dp),
                     modifier = Modifier
@@ -215,7 +215,7 @@ fun SignUpScreen (
                         text = "Log in",
                         fontSize = 16.sp,
                         fontFamily = Fonts.montserratFontFamily,
-                        color = secondaryColor,
+                        color = primaryColor,
                         modifier = Modifier.onClick {
                             vm.onEvent(
                                 AuthEvent.ToSignIn
