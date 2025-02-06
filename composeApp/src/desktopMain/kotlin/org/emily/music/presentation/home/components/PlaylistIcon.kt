@@ -11,11 +11,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +38,12 @@ import org.emily.project.secondaryColor
 @Composable
 fun PlaylistIcon(
     playlist: Playlist,
-    isHovered: Boolean
+    isHovered: Boolean,
+    onMoreOptionsClick: () -> Unit
 ) {
+
+    var isMoreOptionsVisible by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,7 +69,9 @@ fun PlaylistIcon(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(
                 text = playlist.title,
                 color = Color.White,
@@ -75,6 +87,31 @@ fun PlaylistIcon(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+        }
+
+        IconButton(
+            onClick = { onMoreOptionsClick() }
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More options",
+                tint = Color.White,
+            )
+        }
+
+        if (isMoreOptionsVisible) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 56.dp)
+                    .align(Alignment.Top)
+            ) {
+                PlaylistIconMoreOptionsComponent(
+                    onEditDetails = {},
+                    onAddToQueue = {},
+                    onDelete = {},
+                    onDismiss = { isMoreOptionsVisible = false }
+                )
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,8 +53,9 @@ fun CreatePlaylistBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.4f)
-                .fillMaxHeight(0.3f)
+                .fillMaxHeight(0.4f)
                 .padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(secondaryColor)
         ) {
             Column(

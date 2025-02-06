@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.emily.core.Screen
+import org.emily.core.constants.ID
 import org.emily.core.utils.UiEvent
 import org.emily.music.domain.communication.MusicResponse
 import org.emily.music.domain.models.Playlist
@@ -34,6 +35,9 @@ class HomeViewModel(
 
             is HomeEvent.OnCreatePlaylist ->
                 createPlaylist(event.title)
+
+            is HomeEvent.OnDeletePlaylist ->
+                deletePlaylist(event.id)
         }
     }
 
@@ -58,6 +62,18 @@ class HomeViewModel(
     private fun createPlaylist(title: String) {
         viewModelScope.launch {
             val musicResponse =  musicRepository.createPlaylistForUser(title)
+
+            if (musicResponse is MusicResponse.ErrorResponse)
+                println(musicResponse.message)
+
+            else if (musicResponse is MusicResponse.SuccessResponse)
+                getUserPlaylists()
+        }
+    }
+
+    private fun deletePlaylist(id: ID) {
+        viewModelScope.launch {
+            val musicResponse =  musicRepository.removePlaylistFromUser(id)
 
             if (musicResponse is MusicResponse.ErrorResponse)
                 println(musicResponse.message)

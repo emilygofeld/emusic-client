@@ -42,6 +42,7 @@ import org.emily.core.utils.UiEvent
 import org.emily.music.domain.models.Playlist
 import org.emily.music.presentation.home.components.CreatePlaylistBar
 import org.emily.music.presentation.home.components.PlaylistIcon
+import org.emily.music.presentation.home.components.PlaylistIconMoreOptionsComponent
 import org.emily.music.presentation.home.viewmodel.HomeEvent
 import org.emily.music.presentation.home.viewmodel.HomeViewModel
 import org.emily.project.Fonts
@@ -68,6 +69,8 @@ fun HomeScreen(
     }
 
     var isCreatePlaylistBarVisible by remember { mutableStateOf(false) }
+    var selectedPlaylist by remember { mutableStateOf<Playlist?>(null) }
+    var isMoreOptionsVisible by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -138,7 +141,14 @@ fun HomeScreen(
                                 }
                                 .clickable { vm.onEvent(HomeEvent.OnClickPlaylist(playlist = playlist)) }
                         ) {
-                            PlaylistIcon(playlist, isHovered)
+                            PlaylistIcon(
+                                playlist = playlist,
+                                isHovered = isHovered,
+                                onMoreOptionsClick = {
+                                    selectedPlaylist = playlist
+                                    isMoreOptionsVisible = true
+                                }
+                            )
                             Spacer(modifier = Modifier.height(4.dp))
                         }
                     }
@@ -174,5 +184,24 @@ fun HomeScreen(
                 )
             }
         }
+
+        if (isMoreOptionsVisible) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+                    .clickable { isMoreOptionsVisible = false },
+            contentAlignment = Alignment.Center
+            ) {
+                PlaylistIconMoreOptionsComponent(
+                    onEditDetails = { /* Handle Edit */ },
+                    onAddToQueue = { /* Handle Add */ },
+                    onDelete = { selectedPlaylist?.let { HomeEvent.OnDeletePlaylist(it.id) }
+                        ?.let { vm.onEvent(it) } },
+                    onDismiss = { isMoreOptionsVisible = false }
+                )
+            }
+        }
+
     }
 }
