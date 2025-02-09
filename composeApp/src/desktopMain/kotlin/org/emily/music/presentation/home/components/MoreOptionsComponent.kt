@@ -41,6 +41,9 @@ fun PlaylistIconMoreOptionsComponent(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
+
+    var isEditDetailsVisible by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth(0.2f)
@@ -89,7 +92,6 @@ fun PlaylistIconMoreOptionsComponent(
             )
         }
     }
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

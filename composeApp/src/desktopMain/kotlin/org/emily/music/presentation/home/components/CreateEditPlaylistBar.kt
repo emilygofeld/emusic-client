@@ -38,10 +38,11 @@ import org.emily.project.primaryColor
 import org.emily.project.secondaryColor
 
 @Composable
-fun CreatePlaylistBar(
+fun CreateEditPlaylistBar(
     isVisible: Boolean,
     onCreatePlaylist: (String) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    actionText: String
 ) {
     var playlistTitle by remember { mutableStateOf("") }
 
@@ -52,7 +53,7 @@ fun CreatePlaylistBar(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.4f)
+                .fillMaxWidth(0.35f)
                 .fillMaxHeight(0.4f)
                 .padding(16.dp)
                 .clip(RoundedCornerShape(16.dp))
@@ -64,7 +65,7 @@ fun CreatePlaylistBar(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Create New Playlist",
+                    text = "$actionText Playlist",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -119,12 +120,12 @@ fun CreatePlaylistBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Create Playlist",
+                            contentDescription = "$actionText Playlist",
                             tint = Color.Black
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            "Create",
+                            actionText,
                             color = Color.Black,
                             fontFamily = Fonts.montserratFontFamily
                         )

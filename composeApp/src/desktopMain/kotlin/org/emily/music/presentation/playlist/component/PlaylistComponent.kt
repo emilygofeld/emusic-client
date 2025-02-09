@@ -19,6 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
@@ -53,7 +54,6 @@ fun PlaylistComponent(
     vm: PlaylistViewModel,
     songsForTesting: List<Song> = emptyList()
 ) {
-
     val state = vm.state
 
     Column(
@@ -76,7 +76,7 @@ fun PlaylistComponent(
             ) {
                 Icon(
                     modifier = Modifier.size(120.dp).align(Alignment.Center),
-                    imageVector = Icons.Default.MusicNote,
+                    imageVector = if (state.playlist.title == "Favorites") Icons.Default.Favorite else Icons.Default.MusicNote,
                     contentDescription = "Music note",
                     tint = primaryColor
                 )

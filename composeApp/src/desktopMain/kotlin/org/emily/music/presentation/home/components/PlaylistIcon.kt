@@ -14,14 +14,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,8 +39,6 @@ fun PlaylistIcon(
     onMoreOptionsClick: () -> Unit
 ) {
 
-    var isMoreOptionsVisible by remember { mutableStateOf(false) }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,9 +54,10 @@ fun PlaylistIcon(
                 .size(56.dp)
                 .padding(8.dp)
         ) {
+            val defaultPlaylistIcon = if (playlist.title == "Favorites") Icons.Filled.Favorite else Icons.Default.MusicNote
             Icon(
-                modifier = Modifier.size(32.dp).align(Alignment.Center),
-                imageVector = if (isHovered) Icons.Default.PlayArrow else Icons.Default.MusicNote,
+                modifier = Modifier.size(24.dp).align(Alignment.Center),
+                imageVector = if (isHovered) Icons.Default.PlayArrow else defaultPlaylistIcon,
                 contentDescription = "Music note or play arrow",
                 tint = if (isHovered) primaryColor else Color.White
             )
@@ -89,27 +85,14 @@ fun PlaylistIcon(
             )
         }
 
-        IconButton(
-            onClick = { onMoreOptionsClick() }
-        ) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "More options",
-                tint = Color.White,
-            )
-        }
-
-        if (isMoreOptionsVisible) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 56.dp)
-                    .align(Alignment.Top)
+        if (playlist.title != "Favorites") {
+            IconButton(
+                onClick = { onMoreOptionsClick() }
             ) {
-                PlaylistIconMoreOptionsComponent(
-                    onEditDetails = {},
-                    onAddToQueue = {},
-                    onDelete = {},
-                    onDismiss = { isMoreOptionsVisible = false }
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More options",
+                    tint = Color.White,
                 )
             }
         }

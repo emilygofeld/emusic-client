@@ -40,13 +40,15 @@ import kotlinx.coroutines.flow.collectLatest
 import org.emily.core.Screen
 import org.emily.core.utils.UiEvent
 import org.emily.music.domain.models.Playlist
-import org.emily.music.presentation.home.components.CreatePlaylistBar
+import org.emily.music.presentation.home.components.CreateEditPlaylistBar
 import org.emily.music.presentation.home.components.PlaylistIcon
 import org.emily.music.presentation.home.components.PlaylistIconMoreOptionsComponent
 import org.emily.music.presentation.home.viewmodel.HomeEvent
 import org.emily.music.presentation.home.viewmodel.HomeViewModel
 import org.emily.project.Fonts
 import org.emily.project.black
+import org.emily.project.primaryColor
+import org.emily.project.secondaryColor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -71,6 +73,7 @@ fun HomeScreen(
     var isCreatePlaylistBarVisible by remember { mutableStateOf(false) }
     var selectedPlaylist by remember { mutableStateOf<Playlist?>(null) }
     var isMoreOptionsVisible by remember { mutableStateOf(false) }
+    var isEditDetailsVisible by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -95,10 +98,10 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.Default.LibraryMusic,
                         contentDescription = "Music Library",
-                        tint = Color.White.copy(0.7f),
+                        tint = primaryColor, // Color.White.copy(0.7f),
                         modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.weight(0.1f))
                     Text(
                         text = "Your Musical Library",
                         fontFamily = Fonts.montserratFontFamily,
@@ -162,7 +165,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Blue)
+                        .background(secondaryColor)
                 )
             }
         }
@@ -174,13 +177,14 @@ fun HomeScreen(
                     .background(Color.Black.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
             ) {
-                CreatePlaylistBar(
+                CreateEditPlaylistBar(
                     isVisible = isCreatePlaylistBarVisible,
                     onCreatePlaylist = { title ->
                         vm.onEvent(HomeEvent.OnCreatePlaylist(title))
                         isCreatePlaylistBarVisible = false
                     },
-                    onDismiss = { isCreatePlaylistBarVisible = false }
+                    onDismiss = { isCreatePlaylistBarVisible = false },
+                    actionText = "Create"
                 )
             }
         }
@@ -194,14 +198,40 @@ fun HomeScreen(
             contentAlignment = Alignment.Center
             ) {
                 PlaylistIconMoreOptionsComponent(
-                    onEditDetails = { /* Handle Edit */ },
+                    onEditDetails = {
+                        isEditDetailsVisible = true
+                        isMoreOptionsVisible = false
+                    },
                     onAddToQueue = { /* Handle Add */ },
-                    onDelete = { selectedPlaylist?.let { HomeEvent.OnDeletePlaylist(it.id) }
-                        ?.let { vm.onEvent(it) } },
+                    onDelete = {
+                        selectedPlaylist?.let {
+                            HomeEvent.OnDeletePlaylist(it.id)
+                        } ?.let { vm.onEvent(it) }
+                    },
                     onDismiss = { isMoreOptionsVisible = false }
                 )
             }
         }
 
+        if (isEditDetailsVisible) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CreateEditPlaylistBar(
+                    isVisible = isEditDetailsVisible,
+                    onCreatePlaylist = { title ->
+                        selectedPlaylist?.copy(title = title)
+                            ?.let { HomeEvent.OnEditPlaylistDetails(it) }
+                            ?.let { vm.onEvent(it) }
+                        isEditDetailsVisible = false
+                    },
+                    onDismiss = { isEditDetailsVisible = false },
+                    actionText = "Edit"
+                )
+            }
+        }
     }
 }

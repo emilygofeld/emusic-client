@@ -38,6 +38,9 @@ class HomeViewModel(
 
             is HomeEvent.OnDeletePlaylist ->
                 deletePlaylist(event.id)
+
+            is HomeEvent.OnEditPlaylistDetails ->
+                editPlaylist(event.playlist)
         }
     }
 
@@ -73,7 +76,19 @@ class HomeViewModel(
 
     private fun deletePlaylist(id: ID) {
         viewModelScope.launch {
-            val musicResponse =  musicRepository.removePlaylistFromUser(id)
+            val musicResponse = musicRepository.removePlaylistFromUser(id)
+
+            if (musicResponse is MusicResponse.ErrorResponse)
+                println(musicResponse.message)
+
+            else if (musicResponse is MusicResponse.SuccessResponse)
+                getUserPlaylists()
+        }
+    }
+
+    private fun editPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            val musicResponse = musicRepository.updatePlaylist(playlist)
 
             if (musicResponse is MusicResponse.ErrorResponse)
                 println(musicResponse.message)
