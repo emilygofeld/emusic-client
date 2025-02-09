@@ -2,6 +2,7 @@ package org.emily.music.domain.repository
 
 import org.emily.core.constants.ID
 import org.emily.music.domain.communication.MusicResponse
+import org.emily.music.domain.models.Playlist
 
 interface MusicRepository {
     suspend fun addSongToPlaylist(songId: ID, playlistId: ID): MusicResponse
@@ -16,4 +17,5 @@ interface MusicRepository {
     suspend fun getUserData(userId: ID): MusicResponse
     suspend fun getCurrentUserPlaylists(): MusicResponse
     suspend fun getCurrentUserData(): MusicResponse
+    suspend fun updatePlaylist(playlist: Playlist): MusicResponse
 }

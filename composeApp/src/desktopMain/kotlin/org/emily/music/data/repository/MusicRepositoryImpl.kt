@@ -5,6 +5,7 @@ import org.emily.core.constants.ID
 import org.emily.music.domain.api.MusicApi
 import org.emily.music.domain.communication.MusicRequest
 import org.emily.music.domain.communication.MusicResponse
+import org.emily.music.domain.models.Playlist
 import org.emily.music.domain.repository.MusicRepository
 
 class MusicRepositoryImpl(
@@ -58,6 +59,10 @@ class MusicRepositoryImpl(
 
     override suspend fun getCurrentUserData(): MusicResponse {
         return api.sendApiRequest(MusicRequest.GetCurrUserData(), getToken())
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist): MusicResponse {
+        return api.sendApiRequest(MusicRequest.UpdatePlaylist(playlist = playlist), getToken())
     }
 
     private suspend fun getToken(): String {
