@@ -26,7 +26,7 @@ val musicModule = module {
         )
     }
 
-    viewModel { (playlist: Playlist) ->
+    factory { (playlist: Playlist) ->
         PlaylistViewModel(
             musicRepository = get<MusicRepository>(),
             playlist = playlist

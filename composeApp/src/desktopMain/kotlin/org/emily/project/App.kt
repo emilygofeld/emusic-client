@@ -23,6 +23,7 @@ import org.emily.music.presentation.playlist.viewmodel.PlaylistViewModel
 import org.emily.music.presentation.wrapperbar.component.BottomBar
 import org.emily.music.presentation.wrapperbar.component.SearchBar
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarViewModel
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,47 +31,12 @@ import org.koin.core.parameter.parametersOf
 fun App() {
     MaterialTheme {
 
-//        val playlists = mutableListOf(
-//            Playlist(
-//                "hello",
-//                ownerId = "12"
-//            ),
-//            Playlist(
-//                "SLAY",
-//                ownerId = "22"
-//            ),
-//            Playlist(
-//                "screaming my faves",
-//                ownerId = "42"
-//            ),
-//        )
-//
-//        HomeScreen(playlists)
-
-
-//        PlaylistIcon("Emotions", "emily")
-
+        // delete later
         val songsForTesting = mutableListOf(
             Song("Casual", artists = listOf("Chappell Roan"), length = 342, id = "5"),
             Song("Guess ft. Billie Eilish", artists = listOf("Charlie XCX", "Billie Eilish"), length = 235, id = "6"),
             Song("Forget Her", artists = listOf("Jeff Buckley"), length = 707, id = "7")
         )
-
-//
-//        Scaffold(
-//            topBar = { SearchBar(koinViewModel<WrapperBarViewModel>()) },
-//            bottomBar = { BottomBar(koinViewModel<WrapperBarViewModel>()) }
-//        ) { padding ->
-//            Box(
-//                modifier = Modifier.padding(padding)
-//            ) {
-//                PlaylistComponent(
-//
-//                    songs = songs
-//                )
-//            }
-//        }
-
 
         var state by remember { mutableStateOf<Screen>(Screen.Splash) }
 
@@ -131,7 +97,7 @@ fun App() {
                     is Screen.PlaylistScreen -> {
                         val playlist = (state as Screen.PlaylistScreen).playlist
                         PlaylistComponent(
-                            vm = koinViewModel<PlaylistViewModel>(parameters = { parametersOf(playlist) }),
+                            vm = koinInject<PlaylistViewModel>(parameters = { parametersOf(playlist) }),
                             songsForTesting =  songsForTesting
                         )
                     }
