@@ -49,6 +49,10 @@ kotlin {
             implementation("io.insert-koin:koin-core:${Versions.koin_version}")
             implementation("io.insert-koin:koin-compose-viewmodel:${Versions.koin_version}")
 
+            // java-zoom for audio playing
+            implementation("javazoom:jlayer:1.0.1")
+            implementation("androidx.collection:collection:1.4.5")
+
             // icons
             implementation(compose.materialIconsExtended)
         }
