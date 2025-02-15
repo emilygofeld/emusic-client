@@ -18,6 +18,7 @@ object ResponseDeserializer: JsonContentPolymorphicSerializer<MusicResponse>(Mus
             ProtocolCode.GET_PLAYLIST -> MusicResponse.GetPlaylist.serializer()
             ProtocolCode.GET_USER_DATA -> MusicResponse.GetUserData.serializer()
             ProtocolCode.GET_USER_PLAYLISTS -> MusicResponse.GetUserPlaylists.serializer()
+            ProtocolCode.GET_SEARCH_RESULTS -> MusicResponse.GetSearchResult.serializer()
             else -> throw SerializationException("Unknown request code: $code")
         }
     }

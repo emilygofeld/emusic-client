@@ -18,4 +18,5 @@ interface MusicRepository {
     suspend fun getCurrentUserPlaylists(): MusicResponse
     suspend fun getCurrentUserData(): MusicResponse
     suspend fun updatePlaylist(playlist: Playlist): MusicResponse
+    suspend fun getSearchResults(search: String): MusicResponse
 }

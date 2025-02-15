@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.emily.core.Screen
 import org.emily.core.utils.UiEvent
+import org.emily.music.domain.communication.MusicResponse
 import org.emily.music.domain.models.PlayingSong
 import org.emily.music.domain.models.Song
 import org.emily.music.domain.repository.MusicRepository
@@ -52,8 +53,10 @@ class WrapperBarViewModel(
             WrapperBarEvent.OnPlayingStateChange ->
                 state = state.copy(isPlaying = !state.isPlaying)
 
-            is WrapperBarEvent.OnSearchBarChange ->
+            is WrapperBarEvent.OnSearchBarChange -> {
                 state = state.copy(searchBarText = event.searchBarText)
+                getSearchResults()
+            }
 
             WrapperBarEvent.OnSkipSong ->
                 skipSong()
@@ -86,6 +89,20 @@ class WrapperBarViewModel(
     private fun openHomeScreen() {
         viewModelScope.launch {
             _uiEvent.send(UiEvent.Navigate(to = Screen.Home))
+        }
+    }
+
+    private fun getSearchResults() {
+        viewModelScope.launch {
+            val musicResponse = musicRepository.getSearchResults(state.searchBarText)
+
+            if (musicResponse is MusicResponse.ErrorResponse)
+                println(musicResponse.message)
+
+            else if (musicResponse is MusicResponse.GetSearchResult) {
+                val songs = musicResponse.songs
+                _uiEvent.send(UiEvent.Navigate(to = Screen.SearchScreen(songs)))
+            }
         }
     }
 }

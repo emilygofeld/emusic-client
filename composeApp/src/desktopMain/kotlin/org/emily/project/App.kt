@@ -22,6 +22,7 @@ import org.emily.music.presentation.playlist.component.PlaylistComponent
 import org.emily.music.presentation.playlist.viewmodel.PlaylistViewModel
 import org.emily.music.presentation.wrapperbar.component.BottomBar
 import org.emily.music.presentation.wrapperbar.component.SearchBar
+import org.emily.music.presentation.wrapperbar.screen.SearchBarScreen
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarViewModel
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,7 +44,12 @@ fun App() {
         Scaffold(
             topBar = {
                 if (state !is Screen.Signup && state !is Screen.Login && state !is Screen.Splash) {
-                    SearchBar(koinViewModel<WrapperBarViewModel>())
+                    SearchBar(
+                        koinViewModel<WrapperBarViewModel>(),
+                        onNavigate = { screen ->
+                            state = screen
+                        }
+                    )
                 }
             },
             bottomBar = {
@@ -57,6 +63,8 @@ fun App() {
                 }
             }
         ) { padding ->
+
+            SearchBarScreen(songsForTesting)
 
             Box(modifier = Modifier.padding(padding)) {
                 when (state) {
@@ -100,6 +108,11 @@ fun App() {
                             vm = koinInject<PlaylistViewModel>(parameters = { parametersOf(playlist) }),
                             songsForTesting =  songsForTesting
                         )
+                    }
+
+                    is Screen.SearchScreen -> {
+                        val songs = (state as Screen.SearchScreen).songs
+                        SearchBarScreen(songs)
                     }
                 }
             }

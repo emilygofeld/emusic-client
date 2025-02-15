@@ -16,11 +16,15 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.collectLatest
+import org.emily.core.Screen
+import org.emily.core.utils.UiEvent
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarEvent
 import org.emily.music.presentation.wrapperbar.viewmodel.WrapperBarViewModel
 import org.emily.project.Fonts
@@ -31,9 +35,21 @@ import org.emily.project.secondaryColor
 @Composable
 fun SearchBar(
     vm: WrapperBarViewModel,
+    onNavigate: (to: Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state = vm.state
+
+    LaunchedEffect(vm) {
+        vm.uiEvent.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowSnackBar -> {}
+                is UiEvent.Navigate -> {
+                    onNavigate(event.to)
+                }
+            }
+        }
+    }
 
     Row(
         modifier = modifier
