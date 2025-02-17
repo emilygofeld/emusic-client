@@ -1,5 +1,6 @@
 package org.emily.music.presentation.wrapperbar.component
 
+import PlayingSongState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,8 @@ import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,13 +37,13 @@ import org.emily.project.Fonts
 import org.emily.project.secondaryColor
 
 @Composable
-fun BottomBar (
+fun BottomBar(
     vm: WrapperBarViewModel,
     onNavigate: (to: Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val state = vm.state
-    val playingSong = state.currentPlayingSong?.song
+    val playingSong by PlayingSongState.currentPlayingSong.collectAsState()
+    val isPlaying by PlayingSongState.isPlaying.collectAsState()
 
     LaunchedEffect(vm) {
         vm.uiEvent.collectLatest { event ->
@@ -64,7 +67,7 @@ fun BottomBar (
         ) {
             if (playingSong != null) {
                 Text(
-                    text = playingSong.title,
+                    text = playingSong!!.title,
                     color = Color.White,
                     fontFamily = Fonts.montserratFontFamily,
                     fontSize = 16.sp,
@@ -73,7 +76,7 @@ fun BottomBar (
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = playingSong.artists.joinToString(),
+                    text = playingSong!!.artists.joinToString(),
                     color = Color.White,
                     fontFamily = Fonts.montserratFontFamily,
                     fontSize = 12.sp,
@@ -88,7 +91,6 @@ fun BottomBar (
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
-
                 Text(
                     text = "---",
                     color = Color.White,
@@ -103,9 +105,7 @@ fun BottomBar (
             modifier = Modifier.align(Alignment.Center)
         ) {
             IconButton(
-                onClick = {
-                    vm.onEvent(WrapperBarEvent.OnPlayPreviousSong)
-                }
+                onClick = { vm.onEvent(WrapperBarEvent.OnPlayPreviousSong) }
             ) {
                 Icon(
                     imageVector = Icons.Default.SkipPrevious,
@@ -115,21 +115,17 @@ fun BottomBar (
             }
 
             IconButton(
-                onClick = {
-                    vm.onEvent(WrapperBarEvent.OnPlayingStateChange)
-                }
+                onClick = { PlayingSongState.togglePlayingState() }
             ) {
                 Icon(
-                    imageVector = if (state.isPlaying) Icons.Default.Pause else Icons.Rounded.PlayArrow,
-                    contentDescription = if (state.isPlaying) "Stop" else "Play",
-                    tint = Color.White,
+                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Rounded.PlayArrow,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    tint = Color.White
                 )
             }
 
             IconButton(
-                onClick = {
-                    vm.onEvent(WrapperBarEvent.OnSkipSong)
-                }
+                onClick = { vm.onEvent(WrapperBarEvent.OnSkipSong) }
             ) {
                 Icon(
                     imageVector = Icons.Default.SkipNext,

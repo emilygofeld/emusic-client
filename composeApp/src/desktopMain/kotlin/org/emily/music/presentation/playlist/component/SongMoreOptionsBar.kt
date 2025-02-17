@@ -1,4 +1,4 @@
-package org.emily.music.presentation.home.components
+package org.emily.music.presentation.playlist.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,8 +20,7 @@ import org.emily.music.presentation.utils.MoreOptionButton
 import org.emily.project.secondaryColor
 
 @Composable
-fun PlaylistIconMoreOptionsComponent(
-    onEditDetails: () -> Unit,
+fun SongMoreOptionsBar(
     onAddToQueue: () -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit
@@ -31,7 +29,7 @@ fun PlaylistIconMoreOptionsComponent(
     Box(
         modifier = Modifier
             .fillMaxWidth(0.2f)
-            .fillMaxHeight(0.4f)
+            .fillMaxHeight(0.3f)
             .padding(16.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(secondaryColor)
@@ -41,18 +39,6 @@ fun PlaylistIconMoreOptionsComponent(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            MoreOptionButton(
-                text = "Edit Details",
-                icon = Icons.Default.Edit,
-                color = Color.White,
-                onClick = {
-                    onEditDetails()
-                    onDismiss()
-                }
-            )
-
-            Spacer(modifier = Modifier.weight(0.2f))
-
             MoreOptionButton(
                 text = "Add to Queue",
                 icon = Icons.Default.Add,
@@ -66,7 +52,7 @@ fun PlaylistIconMoreOptionsComponent(
             Spacer(modifier = Modifier.weight(0.2f))
 
             MoreOptionButton(
-                text = "Delete",
+                text = "Delete Song",
                 icon = Icons.Default.Delete,
                 color = Color.Red,
                 onClick = {

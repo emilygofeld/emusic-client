@@ -28,6 +28,8 @@ fun playAudio(url: String): AudioPlayer? {
             return null
         }
 
+        println("started playing")
+
         val inputStream = BufferedInputStream(connection.inputStream)
         val audioPlayer = AudioPlayerProvider.create(inputStream)
 

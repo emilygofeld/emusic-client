@@ -98,7 +98,7 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.Default.LibraryMusic,
                         contentDescription = "Music Library",
-                        tint = primaryColor, // Color.White.copy(0.7f),
+                        tint = primaryColor,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.weight(0.1f))

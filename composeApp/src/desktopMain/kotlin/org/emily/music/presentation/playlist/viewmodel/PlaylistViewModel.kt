@@ -1,5 +1,6 @@
 package org.emily.music.presentation.playlist.viewmodel
 
+import PlayingSongState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,6 +21,10 @@ class PlaylistViewModel(
     var state by mutableStateOf(PlaylistState(playlist))
         private set
 
+    init {
+        refreshPlaylist()
+    }
+
     fun onEvent(event: PlaylistEvent) {
         when (event) {
             is PlaylistEvent.OnChangeTitle -> {
@@ -31,6 +36,9 @@ class PlaylistViewModel(
 
             is PlaylistEvent.OnFavoriteChange ->
                 changeFavoriteStatus(event.song)
+
+            is PlaylistEvent.OnDeleteSong ->
+                deleteSong(event.playlistId, event.songId)
         }
     }
 
@@ -70,6 +78,16 @@ class PlaylistViewModel(
 
             else if (response is MusicResponse.ErrorResponse)
                 println(response.message)
+        }
+    }
+
+    private fun deleteSong(playlistId: ID, songId: ID) {
+        viewModelScope.launch {
+            val deleteSongResponse = musicRepository.removeSongFromPlaylist(songId, playlistId)
+            if (deleteSongResponse is MusicResponse.ErrorResponse)
+                println(deleteSongResponse.message)
+
+            refreshPlaylist()
         }
     }
 }

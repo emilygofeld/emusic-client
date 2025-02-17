@@ -1,5 +1,6 @@
 package org.emily.music.presentation.playlist.component
 
+import PlayingSongState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,10 +41,16 @@ import org.emily.project.secondaryColor
 fun SongComponent(
     song: Song,
     onPlayClick: () -> Unit = {},
+    onTogglePlayButton: () -> Unit = {},
     onFavoriteClick: () -> Unit = {},
     onMoreClick: () -> Unit = {},
     isHovered: Boolean = false
 ) {
+    val currentPlayingSong by PlayingSongState.currentPlayingSong.collectAsState()
+    val isPlaying by PlayingSongState.isPlaying.collectAsState()
+
+    val isThisSongPlaying = isPlaying && currentPlayingSong?.id == song.id
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,12 +63,18 @@ fun SongComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = onPlayClick,
+                onClick = {
+                    if (currentPlayingSong?.id != song.id) {
+                        onPlayClick()
+                    } else {
+                        onTogglePlayButton()
+                    }
+                },
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Play",
+                    imageVector = if (!isThisSongPlaying) Icons.Default.PlayArrow else Icons.Default.Pause,
+                    contentDescription = "Play or pause",
                     tint = if (isHovered) primaryColor else Color.White,
                     modifier = Modifier.size(24.dp)
                 )
@@ -120,7 +136,6 @@ fun SongComponent(
     }
 }
 
-@Composable
 fun formatDuration(seconds: Int): String {
     val minutes = seconds / 60
     val remainingSeconds = seconds % 60

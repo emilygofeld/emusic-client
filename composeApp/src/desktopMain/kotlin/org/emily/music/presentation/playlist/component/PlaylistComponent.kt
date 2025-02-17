@@ -1,6 +1,8 @@
 package org.emily.music.presentation.playlist.component
 
+import PlayingSongState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
@@ -55,6 +59,9 @@ fun PlaylistComponent(
     songsForTesting: List<Song> = emptyList()
 ) {
     val state = vm.state
+
+    var isSongMoreOptionsVisible by remember { mutableStateOf(false) }
+    var selectedSong by remember { mutableStateOf<Song?>(null) }
 
     Column(
         modifier = Modifier
@@ -164,9 +171,10 @@ fun PlaylistComponent(
 
             IconButton(onClick = {}) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = Icons.Default.Add,
                     contentDescription = "More options",
-                    tint = Color.White.copy(alpha = 0.7f)
+                    tint = Color.White.copy(alpha = 0.7f),
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }
@@ -188,8 +196,18 @@ fun PlaylistComponent(
                 ) {
                     SongComponent(
                         song = song,
+                        onPlayClick = {
+                            PlayingSongState.playSong(song)
+                        },
+                        onTogglePlayButton = {
+                            PlayingSongState.togglePlayingState()
+                        },
                         onFavoriteClick = {
                             vm.onEvent(PlaylistEvent.OnFavoriteChange(song))
+                        },
+                        onMoreClick = {
+                            selectedSong = song
+                            isSongMoreOptionsVisible = true
                         },
                         isHovered = isHovered
                     )
@@ -199,14 +217,40 @@ fun PlaylistComponent(
             }
         }
     }
+
+    if (isSongMoreOptionsVisible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f))
+                .clickable { isSongMoreOptionsVisible = false }, // Dismiss on background click
+            contentAlignment = Alignment.Center
+        ) {
+            SongMoreOptionsBar(
+                onAddToQueue = { /* Handle Add */ },
+                onDelete = {
+                    selectedSong?.id?.let {
+                        vm.onEvent(PlaylistEvent.OnDeleteSong(state.playlist.id, it))
+                    }
+                    isSongMoreOptionsVisible = false
+                },
+                onDismiss = { isSongMoreOptionsVisible = false }
+            )
+        }
+    }
 }
 
 
 fun formatPlaylistDuration(durationInSeconds: Int): String {
     val hours = durationInSeconds / 3600
     val minutes = (durationInSeconds % 3600) / 60
-    if (hours == 0)
-        return "$minutes min"
-    return "%d hr %02d min".format(hours, minutes)
+    val seconds = durationInSeconds % 60
+
+    return when {
+        hours > 0 -> "%d hr %02d min %02d sec".format(hours, minutes, seconds)
+        minutes > 0 -> "%d min %02d sec".format(minutes, seconds)
+        else -> "%d sec".format(seconds)
+    }
 }
+
 
