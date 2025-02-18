@@ -22,9 +22,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
@@ -54,7 +52,7 @@ import org.emily.project.secondaryColor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun PlaylistComponent(
+fun PlaylistScreen(
     vm: PlaylistViewModel,
     songsForTesting: List<Song> = emptyList()
 ) {
@@ -62,6 +60,8 @@ fun PlaylistComponent(
 
     var isSongMoreOptionsVisible by remember { mutableStateOf(false) }
     var selectedSong by remember { mutableStateOf<Song?>(null) }
+
+    var isAddSongBarVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -159,7 +159,11 @@ fun PlaylistComponent(
                 )
             }
 
-            IconButton(onClick = {}) {
+            IconButton(
+                onClick = {
+                    isAddSongBarVisible = true
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Shuffle,
                     contentDescription = "Shuffle",
@@ -169,7 +173,11 @@ fun PlaylistComponent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(onClick = {}) {
+            IconButton(
+                onClick = {
+                    isAddSongBarVisible = true
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "More options",
@@ -223,7 +231,7 @@ fun PlaylistComponent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.3f))
-                .clickable { isSongMoreOptionsVisible = false }, // Dismiss on background click
+                .clickable { isSongMoreOptionsVisible = false },
             contentAlignment = Alignment.Center
         ) {
             SongMoreOptionsBar(
@@ -235,6 +243,28 @@ fun PlaylistComponent(
                     isSongMoreOptionsVisible = false
                 },
                 onDismiss = { isSongMoreOptionsVisible = false }
+            )
+        }
+    }
+
+    if (isAddSongBarVisible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f))
+                .clickable { isAddSongBarVisible = false },
+            contentAlignment = Alignment.Center
+        ) {
+            AddSongToPlaylistBar(
+                state.searchSongBarText,
+                state.searchedSongs,
+                onSearchChanged = { updatedSearchText ->
+                    vm.onEvent(PlaylistEvent.OnSearchSong(updatedSearchText))
+                },
+                onAddSong = { songId ->
+                    vm.onEvent(PlaylistEvent.OnAddSong(state.playlist.id, songId))
+                },
+                onDismiss = { isAddSongBarVisible = false }
             )
         }
     }

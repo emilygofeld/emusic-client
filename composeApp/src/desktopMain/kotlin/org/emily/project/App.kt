@@ -18,7 +18,7 @@ import org.emily.core.Screen
 import org.emily.music.domain.models.Song
 import org.emily.music.presentation.home.HomeScreen
 import org.emily.music.presentation.home.viewmodel.HomeViewModel
-import org.emily.music.presentation.playlist.component.PlaylistComponent
+import org.emily.music.presentation.playlist.component.PlaylistScreen
 import org.emily.music.presentation.playlist.viewmodel.PlaylistViewModel
 import org.emily.music.presentation.wrapperbar.component.BottomBar
 import org.emily.music.presentation.wrapperbar.component.SearchBar
@@ -104,7 +104,7 @@ fun App() {
 
                     is Screen.PlaylistScreen -> {
                         val playlist = (state as Screen.PlaylistScreen).playlist
-                        PlaylistComponent(
+                        PlaylistScreen(
                             vm = koinInject<PlaylistViewModel>(parameters = { parametersOf(playlist) }),
                             songsForTesting =  songsForTesting
                         )

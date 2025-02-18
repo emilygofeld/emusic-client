@@ -1,6 +1,5 @@
 package org.emily.music.presentation.playlist.viewmodel
 
-import PlayingSongState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -39,6 +38,11 @@ class PlaylistViewModel(
 
             is PlaylistEvent.OnDeleteSong ->
                 deleteSong(event.playlistId, event.songId)
+
+            is PlaylistEvent.OnSearchSong -> {
+                state = state.copy(searchSongBarText = event.searchSongBarText)
+                getSearchResults()
+            }
         }
     }
 
@@ -88,6 +92,20 @@ class PlaylistViewModel(
                 println(deleteSongResponse.message)
 
             refreshPlaylist()
+        }
+    }
+
+    private fun getSearchResults() {
+        viewModelScope.launch {
+            val musicResponse = musicRepository.getSearchResults(state.searchSongBarText)
+
+            if (musicResponse is MusicResponse.ErrorResponse)
+                println(musicResponse.message)
+
+            else if (musicResponse is MusicResponse.GetSearchResult) {
+                val songs = musicResponse.songs
+                state = state.copy(searchedSongs = songs)
+            }
         }
     }
 }

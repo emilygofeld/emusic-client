@@ -8,4 +8,5 @@ sealed class PlaylistEvent {
     data class OnAddSong(val playlistId: ID, val songId: ID): PlaylistEvent()
     data class OnFavoriteChange(val song: Song): PlaylistEvent()
     data class OnDeleteSong(val playlistId: ID, val songId: ID): PlaylistEvent()
+    data class OnSearchSong(val searchSongBarText: String): PlaylistEvent()
 }
