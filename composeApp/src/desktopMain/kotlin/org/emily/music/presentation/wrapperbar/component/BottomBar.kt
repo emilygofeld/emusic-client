@@ -1,6 +1,6 @@
 package org.emily.music.presentation.wrapperbar.component
 
-import PlayingSongState
+import org.emily.music.presentation.playingsong.PlayingSongState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

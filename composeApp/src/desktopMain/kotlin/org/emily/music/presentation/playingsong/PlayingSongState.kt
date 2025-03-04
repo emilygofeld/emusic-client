@@ -1,3 +1,5 @@
+package org.emily.music.presentation.playingsong
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.emily.music.data.playaudio.playAudio
@@ -13,7 +15,8 @@ object PlayingSongState {
 
     private var audioPlayer: AudioPlayer? = null
 
-        fun playSong(song: Song) {
+    // function plays new song or resumes current playing song
+    fun playSong(song: Song) {
         if (_currentPlayingSong.value?.url != song.url) {
             _currentPlayingSong.value = song
             audioPlayer?.close()
@@ -25,15 +28,13 @@ object PlayingSongState {
             audioPlayer?.resume()
             _isPlaying.value = true
         }
+
+        QueueStateManager.addSongToRecentSongs(song)
     }
 
-    private fun pause() {
-        audioPlayer?.pause()
-        _isPlaying.value = false
-    }
-
+    // function plays new song or pauses/resumes current playing song
     fun togglePlayingState(song: Song? = null) {
-        if (_isPlaying.value) {
+        if (_isPlaying.value && (currentPlayingSong.value == song || song == null)) {
             pause()
         } else {
             song?.let {
@@ -42,5 +43,15 @@ object PlayingSongState {
                 playSong(it)
             }
         }
+    }
+
+    private fun pause() {
+        audioPlayer?.pause()
+        _isPlaying.value = false
+    }
+
+    fun stop() {
+        audioPlayer?.close()
+        _currentPlayingSong.value = null
     }
 }

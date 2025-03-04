@@ -15,7 +15,6 @@ import org.emily.auth.presentation.screens.SignInScreen
 import org.emily.auth.presentation.screens.SignUpScreen
 import org.emily.auth.presentation.screens.SplashScreen
 import org.emily.core.Screen
-import org.emily.music.domain.models.Song
 import org.emily.music.presentation.home.HomeScreen
 import org.emily.music.presentation.home.viewmodel.HomeViewModel
 import org.emily.music.presentation.playlist.component.PlaylistScreen
@@ -31,13 +30,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun App() {
     MaterialTheme {
-
-        // delete later
-        val songsForTesting = mutableListOf(
-            Song("Casual", artists = listOf("Chappell Roan"), length = 342, id = "5"),
-            Song("Guess ft. Billie Eilish", artists = listOf("Charlie XCX", "Billie Eilish"), length = 235, id = "6"),
-            Song("Forget Her", artists = listOf("Jeff Buckley"), length = 707, id = "7")
-        )
 
         var state by remember { mutableStateOf<Screen>(Screen.Splash) }
 
@@ -63,8 +55,6 @@ fun App() {
                 }
             }
         ) { padding ->
-
-            SearchBarScreen(songsForTesting)
 
             Box(modifier = Modifier.padding(padding)) {
                 when (state) {
@@ -106,7 +96,6 @@ fun App() {
                         val playlist = (state as Screen.PlaylistScreen).playlist
                         PlaylistScreen(
                             vm = koinInject<PlaylistViewModel>(parameters = { parametersOf(playlist) }),
-                            songsForTesting =  songsForTesting
                         )
                     }
 

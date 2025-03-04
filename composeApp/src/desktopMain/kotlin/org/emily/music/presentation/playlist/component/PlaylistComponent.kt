@@ -1,6 +1,5 @@
 package org.emily.music.presentation.playlist.component
 
-import PlayingSongState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.emily.music.domain.models.Song
+import org.emily.music.presentation.playingsong.PlayingSongState
+import org.emily.music.presentation.playingsong.QueueStateManager
 import org.emily.music.presentation.playlist.viewmodel.PlaylistEvent
 import org.emily.music.presentation.playlist.viewmodel.PlaylistViewModel
 import org.emily.project.black
@@ -54,7 +55,6 @@ import org.emily.project.secondaryColor
 @Composable
 fun PlaylistScreen(
     vm: PlaylistViewModel,
-    songsForTesting: List<Song> = emptyList()
 ) {
     val state = vm.state
 
@@ -146,7 +146,15 @@ fun PlaylistScreen(
         ) {
 
             IconButton(
-                onClick = {},
+                onClick = {
+                    val firstSong = state.playlist.songs.firstOrNull()
+                    if (firstSong != null)
+                        PlayingSongState.togglePlayingState(firstSong)
+                    state.playlist.songs.forEach { song ->
+                        if (song != firstSong)
+                            QueueStateManager.addSongToQueue(song)
+                    }
+                },
                 modifier = Modifier
                     .size(56.dp)
                     .background(primaryColor, RoundedCornerShape(28.dp))
@@ -235,7 +243,7 @@ fun PlaylistScreen(
             contentAlignment = Alignment.Center
         ) {
             SongMoreOptionsBar(
-                onAddToQueue = { /* Handle Add */ },
+                onAddToQueue = { selectedSong?.let { QueueStateManager.addSongToQueue(it) } },
                 onDelete = {
                     selectedSong?.id?.let {
                         vm.onEvent(PlaylistEvent.OnDeleteSong(state.playlist.id, it))

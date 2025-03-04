@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,19 +44,20 @@ import org.emily.music.domain.models.Playlist
 import org.emily.music.presentation.home.components.CreateEditPlaylistBar
 import org.emily.music.presentation.home.components.PlaylistIcon
 import org.emily.music.presentation.home.components.PlaylistIconMoreOptionsComponent
+import org.emily.music.presentation.home.components.RecentCard
 import org.emily.music.presentation.home.viewmodel.HomeEvent
 import org.emily.music.presentation.home.viewmodel.HomeViewModel
+import org.emily.music.presentation.playingsong.PlayingSongState
+import org.emily.music.presentation.playingsong.QueueStateManager
 import org.emily.project.Fonts
 import org.emily.project.black
 import org.emily.project.primaryColor
-import org.emily.project.secondaryColor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen(
     vm: HomeViewModel,
     onNavigate: (to: Screen) -> Unit,
-    playlists: List<Playlist> = emptyList()
 ) {
     val state = vm.state
 
@@ -159,14 +161,23 @@ fun HomeScreen(
             }
 
             Column(
-                modifier = Modifier
-                    .weight(3f)
+                modifier = Modifier.weight(3f).padding(16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(secondaryColor)
-                )
+                LazyColumn {
+                    items(QueueStateManager.getRecentSongs().reversed().chunked(4)) { songGroup ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            songGroup.forEach { song ->
+                               RecentCard(
+                                   song = song,
+                                   onPlay = { PlayingSongState.togglePlayingState(song) }
+                               )
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -202,7 +213,11 @@ fun HomeScreen(
                         isEditDetailsVisible = true
                         isMoreOptionsVisible = false
                     },
-                    onAddToQueue = { /* Handle Add */ },
+                    onAddToQueue = {
+                        selectedPlaylist?.songs?.forEach { song ->
+                            QueueStateManager.addSongToQueue(song)
+                        }
+                    },
                     onDelete = {
                         selectedPlaylist?.let {
                             HomeEvent.OnDeletePlaylist(it.id)

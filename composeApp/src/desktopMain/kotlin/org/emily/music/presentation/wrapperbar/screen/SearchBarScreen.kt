@@ -1,6 +1,6 @@
 package org.emily.music.presentation.wrapperbar.screen
 
-import PlayingSongState
+import org.emily.music.presentation.playingsong.PlayingSongState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,8 +50,14 @@ import org.emily.project.secondaryColor
 fun SearchBarScreen(
     songs: List<Song>
 ) {
+
+    val topSong = songs.firstOrNull()
+
+    val currentPlayingSong by PlayingSongState.currentPlayingSong.collectAsState()
+    val isPlaying by PlayingSongState.isPlaying.collectAsState()
+
+    val isTopSongPlaying = isPlaying && currentPlayingSong?.id == topSong?.id
     var selectedSongId by remember { mutableStateOf<ID?>(null) }
-    var isTopSongPlaying by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -99,9 +106,6 @@ fun SearchBarScreen(
                         .padding(16.dp)
                 ) {
                     songs.firstOrNull()?.let { topSong ->
-
-                        isTopSongPlaying = PlayingSongState.isPlaying.value && PlayingSongState.currentPlayingSong.value?.id == topSong.id
-
                         Text(
                             topSong.title,
                             color = Color.White,
@@ -123,7 +127,6 @@ fun SearchBarScreen(
                             onClick = {
                                 selectedSongId = topSong.id
                                 PlayingSongState.togglePlayingState(topSong)
-                                isTopSongPlaying = !isTopSongPlaying
                             },
                             modifier = Modifier
                                 .size(40.dp)
@@ -139,7 +142,6 @@ fun SearchBarScreen(
                         }
                     }
                 }
-
             }
 
             Column(
@@ -152,6 +154,8 @@ fun SearchBarScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -166,7 +170,6 @@ fun SearchBarScreen(
                                 .clickable {
                                     selectedSongId = song.id
                                     PlayingSongState.playSong(song)
-                                    isTopSongPlaying = PlayingSongState.isPlaying.value && PlayingSongState.currentPlayingSong.value?.id == songs.firstOrNull()?.id
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp)

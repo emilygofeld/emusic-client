@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import org.emily.core.Screen
 import org.emily.core.utils.UiEvent
 import org.emily.music.domain.communication.MusicResponse
-import org.emily.music.domain.models.PlayingSong
-import org.emily.music.domain.models.Song
 import org.emily.music.domain.repository.MusicRepository
+import org.emily.music.presentation.playingsong.PlayingSongState
+import org.emily.music.presentation.playingsong.QueueStateManager
 
 class WrapperBarViewModel(
     private val musicRepository: MusicRepository
@@ -25,28 +25,13 @@ class WrapperBarViewModel(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        // for testing purpose - delete later
-
-        state.songQueue.add(
-            PlayingSong(
-                Song("Vampire", artists = listOf("Olivia rodrigo"), length = 5, id = "5")
-            )
+        state = state.copy(
+            currentPlayingSong = state.songQueue.firstOrNull(),
+            songQueue = state.getSongQueue(),
+            historyStack = state.getHistoryStack()
         )
-
-        state.songQueue.add(
-            PlayingSong(
-                Song("Options", artists = listOf("NF"), length = 6, id = "4")
-            )
-        )
-
-        state.songQueue.add(
-            PlayingSong(
-                Song("Genius", artists = listOf("Sia", "Labrinth", "Diplo"), length = 6, id = "4")
-            )
-        )
-
-        state = state.copy(currentPlayingSong = state.songQueue.firstOrNull())
     }
+
 
     fun onEvent(event: WrapperBarEvent) {
         when (event) {
@@ -64,27 +49,54 @@ class WrapperBarViewModel(
             WrapperBarEvent.OnPlayPreviousSong ->
                 playPreviousSong()
 
-            is WrapperBarEvent.OnSongBarChange ->
-                state.songQueue.addLast(event.newSong)
+            is WrapperBarEvent.OnSongBarChange -> {
+                val updatedQueue = state.getSongQueue().apply { addLast(event.newSong) }
+                state = state.copy(songQueue = updatedQueue.toList())
+            }
 
             WrapperBarEvent.OnOpenHome ->
                 openHomeScreen()
         }
     }
 
-    private fun skipSong() {
-        val currentSong = state.songQueue.removeFirstOrNull() ?: return
-        state.historyStack.addLast(currentSong)
 
-        val nextSong = state.songQueue.firstOrNull()
-        state = state.copy(currentPlayingSong = nextSong)
+    private fun skipSong() {
+        val currentSong = PlayingSongState.currentPlayingSong
+        val updatedHistory = state.getHistoryStack().apply {
+            currentSong.value?.let { addLast(it) }
+        }
+
+        val nextSong = QueueStateManager.removeFromQueueBeginning()
+        if (nextSong == null)
+            PlayingSongState.stop()
+        else
+            PlayingSongState.togglePlayingState(nextSong)
+
+        state = state.copy(
+            historyStack = updatedHistory.toList(),
+            currentPlayingSong = nextSong
+        )
     }
 
     private fun playPreviousSong() {
-        val previousSong = state.historyStack.removeLastOrNull() ?: return
-        state.songQueue.addFirst(previousSong)
-        state = state.copy(currentPlayingSong = previousSong)
+        val previousSong = state.getHistoryStack().removeLastOrNull()
+        val updatedQueue = state.getSongQueue().apply {
+            if (previousSong != null) {
+                addFirst(previousSong)
+            }
+        }
+
+        if (previousSong == null)
+            PlayingSongState.stop()
+        else
+            PlayingSongState.togglePlayingState(previousSong)
+
+        state = state.copy(
+            songQueue = updatedQueue.toList(),
+            currentPlayingSong = previousSong
+        )
     }
+
 
     private fun openHomeScreen() {
         viewModelScope.launch {
