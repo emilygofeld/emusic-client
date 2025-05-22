@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +61,17 @@ fun SearchBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
+
+//        IconButton(
+//            onClick = {}
+//        ) {
+//            Icon(
+//                imageVector = Icons.AutoMirrored.Filled.Logout,
+//                contentDescription = "logout",
+//                tint = Color.White.copy(alpha = 0.7f)
+//            )
+//        }
+
         OutlinedTextField(
             value = state.searchBarText,
             onValueChange = {

@@ -69,6 +69,10 @@ class MusicRepositoryImpl(
         return api.sendApiRequest(MusicRequest.GetSearchResults(search = search), getToken())
     }
 
+    override suspend fun getGlobalFavoriteSongs(): MusicResponse {
+        return api.sendApiRequest(MusicRequest.GetGlobalFavoriteSongs(), getToken())
+    }
+
     private suspend fun getToken(): String {
         return tokenService.get() ?: throw IllegalStateException("Invalid or missing token")
     }

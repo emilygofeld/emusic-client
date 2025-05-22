@@ -40,6 +40,7 @@ class MusicApiImpl(
             is MusicRequest.DeleteSongFromFavorites -> json.encodeToString(request)
             is MusicRequest.UpdatePlaylist -> json.encodeToString(request)
             is MusicRequest.GetSearchResults -> json.encodeToString(request)
+            is MusicRequest.GetGlobalFavoriteSongs -> json.encodeToString(request)
         }
 
         val res = client.post("${serverIp}emusic") {
@@ -49,6 +50,5 @@ class MusicApiImpl(
         }.bodyAsText()
 
         return json.decodeFromString(ResponseDeserializer, res)
-
     }
 }

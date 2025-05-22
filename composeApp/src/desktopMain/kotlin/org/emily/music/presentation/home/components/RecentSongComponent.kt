@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.emily.music.domain.models.Song
+import org.emily.core.constants.ID
 import org.emily.music.presentation.playingsong.PlayingSongState
 import org.emily.music.presentation.utils.WaveAnimation
 import org.emily.project.Fonts
@@ -46,7 +46,9 @@ import org.emily.project.secondaryColor
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RecentCard(
-    song: Song,
+    title: String,
+    artists: List<String>,
+    id: ID,
     onPlay: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,7 +60,7 @@ fun RecentCard(
     val currentPlayingSong by PlayingSongState.currentPlayingSong.collectAsState()
     val isPlaying by PlayingSongState.isPlaying.collectAsState()
 
-    val isThisSongPlaying = isPlaying && currentPlayingSong?.id == song.id
+    val isThisSongPlaying = isPlaying && currentPlayingSong?.id == id
 
     Column(
         modifier = modifier
@@ -103,7 +105,7 @@ fun RecentCard(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = song.title,
+            text = title,
             color = Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
@@ -115,7 +117,7 @@ fun RecentCard(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = song.artists.joinToString(),
+            text = artists.joinToString(),
             color = Color.White.copy(alpha = 0.7f),
             fontSize = 12.sp,
             maxLines = 2,

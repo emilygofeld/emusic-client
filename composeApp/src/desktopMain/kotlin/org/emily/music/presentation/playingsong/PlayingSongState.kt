@@ -34,7 +34,7 @@ object PlayingSongState {
 
     // function plays new song or pauses/resumes current playing song
     fun togglePlayingState(song: Song? = null) {
-        if (_isPlaying.value && (currentPlayingSong.value == song || song == null)) {
+        if (_isPlaying.value && (currentPlayingSong.value?.id == song?.id || song == null)) {
             pause()
         } else {
             song?.let {

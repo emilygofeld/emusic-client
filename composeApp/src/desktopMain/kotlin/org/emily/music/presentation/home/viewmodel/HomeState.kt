@@ -5,5 +5,6 @@ import org.emily.music.domain.models.Song
 
 data class HomeState(
     val recentSongs: List<Song> = emptyList(),
-    val recentPlaylists: List<Playlist> = emptyList()
+    val recentPlaylists: List<Playlist> = emptyList(),
+    val globalFavoriteSongs: List<Song> = emptyList()
 )

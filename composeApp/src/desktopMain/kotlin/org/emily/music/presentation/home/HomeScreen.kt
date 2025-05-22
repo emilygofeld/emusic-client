@@ -62,6 +62,8 @@ fun HomeScreen(
     val state = vm.state
 
     LaunchedEffect(vm) {
+        vm.onEvent(HomeEvent.OnGetGlobalLikedSongs)
+
         vm.uiEvent.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackBar -> {}
@@ -164,6 +166,17 @@ fun HomeScreen(
                 modifier = Modifier.weight(3f).padding(16.dp)
             ) {
                 LazyColumn {
+
+                    item {
+                        Text(
+                            text = "Recent Songs",
+                            color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                        )
+                    }
+
                     items(QueueStateManager.getRecentSongs().reversed().chunked(4)) { songGroup ->
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -171,9 +184,37 @@ fun HomeScreen(
                         ) {
                             songGroup.forEach { song ->
                                RecentCard(
-                                   song = song,
+                                   title = song.title,
+                                   artists = song.artists,
+                                   id = song.id,
                                    onPlay = { PlayingSongState.togglePlayingState(song) }
                                )
+                            }
+                        }
+                    }
+
+                    item {
+                        Text(
+                            text = "Most Liked Songs",
+                            color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                        )
+                    }
+
+                    items(state.globalFavoriteSongs.chunked(4)) { faveSongGroup ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            faveSongGroup.forEach { faveSong ->
+                                RecentCard(
+                                    title = faveSong.title,
+                                    artists = faveSong.artists,
+                                    id = faveSong.id,
+                                    onPlay = { PlayingSongState.togglePlayingState(faveSong) }
+                                )
                             }
                         }
                     }

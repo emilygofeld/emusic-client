@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import org.emily.core.constants.ID
 import org.emily.core.utils.UiEvent
 import org.emily.music.domain.communication.MusicResponse
 import org.emily.music.domain.models.Playlist
+import org.emily.music.domain.models.Song
 import org.emily.music.domain.repository.MusicRepository
 
 class HomeViewModel(
@@ -26,6 +28,7 @@ class HomeViewModel(
 
     init {
         getUserPlaylists()
+        getGlobalLikedSongs()
     }
 
     fun onEvent(event: HomeEvent) {
@@ -41,6 +44,9 @@ class HomeViewModel(
 
             is HomeEvent.OnEditPlaylistDetails ->
                 editPlaylist(event.playlist)
+
+            HomeEvent.OnGetGlobalLikedSongs ->
+                getGlobalLikedSongs()
         }
     }
 
@@ -95,6 +101,14 @@ class HomeViewModel(
 
             else if (musicResponse is MusicResponse.SuccessResponse)
                 getUserPlaylists()
+        }
+    }
+
+    private fun getGlobalLikedSongs() {
+        viewModelScope.launch {
+            val musicResponse = musicRepository.getGlobalFavoriteSongs()
+            if (musicResponse is MusicResponse.GetGlobalFavoriteSongs)
+                state = state.copy(globalFavoriteSongs = musicResponse.songs)
         }
     }
 }
