@@ -7,16 +7,18 @@ import org.emily.auth.domain.authentication.AuthRequest
 import org.emily.auth.domain.authentication.AuthResponse
 import org.emily.auth.domain.authentication.AuthResult
 import org.emily.auth.domain.repository.AuthRepository
+import org.emily.auth.domain.security.EncryptionService
 import org.emily.auth.domain.token.TokenService
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
-    private val tokenService: TokenService<String>
+    private val tokenService: TokenService<String>,
+    private val encryptionService: EncryptionService
 ): AuthRepository {
 
     override suspend fun signUp(username: String, password: String): AuthResult<Unit> {
         return try {
-            when (val response = api.signUp(AuthRequest(username, password))) {
+            when (val response = api.signUp(AuthRequest(encryptionService.encrypt(username), encryptionService.encrypt(password)))) {
                 is AuthResponse.SuccessResponse -> {
                     tokenService.put(response.token) // save the token
                     AuthResult.Authorized(Unit)
@@ -32,7 +34,7 @@ class AuthRepositoryImpl(
 
     override suspend fun signIn(username: String, password: String): AuthResult<Unit> {
         return try {
-            when (val response = api.signIn(AuthRequest(username, password))) {
+            when (val response = api.signIn(AuthRequest(encryptionService.encrypt(username), encryptionService.encrypt(password)))) {
                 is AuthResponse.SuccessResponse -> {
                     tokenService.put(response.token) // save the token
                     AuthResult.Authorized(Unit)

@@ -16,18 +16,23 @@ import org.emily.auth.domain.api.AuthApi
 import org.emily.auth.domain.authentication.AuthRequest
 import org.emily.auth.domain.authentication.AuthResponse
 import org.emily.auth.domain.authentication.AuthResult
+import org.emily.auth.domain.security.EncryptionService
 
 class AuthApiImpl(
     private val client: HttpClient,
-    private val serverIp: String
+    private val serverIp: String,
+    private val encryptionService: EncryptionService
 ): AuthApi {
 
     override suspend fun signUp(request: AuthRequest): AuthResponse {
         val res = client.post("${serverIp}signUp") {
             contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(AuthRequest.serializer(), request)) // Serialize request
+            setBody(Json.encodeToString(AuthRequest.serializer(), request))
         }.bodyAsText()
-        return Json.decodeFromString<AuthResponse>(res) // Deserialize the response into AuthResponse
+
+        println("res: $res")
+        val decrypted = encryptionService.decrypt(res)
+        return Json.decodeFromString(AuthResponse.serializer(), decrypted)
     }
 
     override suspend fun signIn(request: AuthRequest): AuthResponse {
@@ -35,7 +40,10 @@ class AuthApiImpl(
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(AuthRequest.serializer(), request))
         }.bodyAsText()
-        return Json.decodeFromString<AuthResponse>(res) // Deserialize the response into AuthResponse
+
+        println("res: $res")
+        val decrypted = encryptionService.decrypt(res)
+        return Json.decodeFromString(AuthResponse.serializer(), decrypted)
     }
 
     override suspend fun authenticate(token: String): AuthResult<Unit> {

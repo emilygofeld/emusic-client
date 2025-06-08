@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import org.emily.auth.data.api.AuthApiImpl
 import org.emily.auth.data.token.JwtTokenService
 import org.emily.auth.domain.api.AuthApi
+import org.emily.auth.domain.security.EncryptionService
 import org.emily.auth.domain.token.TokenService
 import org.emily.music.data.api.MusicApiImpl
 import org.emily.music.domain.api.MusicApi
@@ -25,11 +26,18 @@ val appModule = module {
         }
     }
 
-    val serverIp = "http://172.20.10.5:8080/"
+    single {
+        EncryptionService(
+            secret = System.getenv("AES_SECRET") ?: error("Missing AES_SECRET"),
+            iv = System.getenv("AES_IV") ?: error("Missing AES_IV")
+        )
+    }
+
+    val serverIp = "http://10.0.0.11:8080/"
     single<TokenService<String>> { JwtTokenService(Settings()) }
 
     // auth
-    single<AuthApi> { AuthApiImpl(client, serverIp) }
+    single<AuthApi> { AuthApiImpl(client, serverIp, get<EncryptionService>()) }
 
     // music
     single<MusicApi> { MusicApiImpl(client, serverIp) }
