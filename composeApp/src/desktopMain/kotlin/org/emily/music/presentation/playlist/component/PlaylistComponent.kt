@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -173,8 +172,8 @@ fun PlaylistScreen(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Shuffle,
-                    contentDescription = "Shuffle",
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Small add",
                     tint = Color.White.copy(alpha = 0.7f)
                 )
             }
